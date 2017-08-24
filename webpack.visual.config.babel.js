@@ -1,3 +1,5 @@
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+
 import path from 'path';
 
 export default {
@@ -15,4 +17,10 @@ export default {
       loader: 'babel-loader',
     }],
   },
-};
+
+  plugins: [
+    new HtmlWebpackPlugin(),
+  ],
+
+  devtool: 'eval-source-map',
+}
