@@ -19,7 +19,9 @@ export default {
   },
 
   plugins: [
-    new HtmlWebpackPlugin(),
+    new HtmlWebpackPlugin({
+      template: 'src/assets/index.html',
+    }),
   ],
 
   devtool: 'eval-source-map',
