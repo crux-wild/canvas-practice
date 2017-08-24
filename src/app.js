@@ -2,7 +2,7 @@ import ReactDOM from 'react-dom';
 
 import React from 'react';
 
-import Char from 'elements/Char';
+import Chart from 'elements/Chart';
 
 ReactDOM.render(
   <Char id="char-one" />,
