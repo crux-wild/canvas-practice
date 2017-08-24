@@ -1,6 +1,6 @@
 import React from 'react';
 
-class Char extends React.Component {
+class Chart extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -15,4 +15,4 @@ class Char extends React.Component {
   }
 }
 
-export default Char;
+export default Chart;

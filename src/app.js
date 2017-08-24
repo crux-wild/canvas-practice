@@ -5,6 +5,6 @@ import React from 'react';
 import Chart from 'elements/Chart';
 
 ReactDOM.render(
-  <Char id="char-one" />,
+  <Chart id="char-one" />,
   document.querySelector('main'),
 );

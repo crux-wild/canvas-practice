@@ -1,7 +1,8 @@
 function getChart({ selector, contextType, contextAttributes }) {
-  const chartEls = document.querySelecotrAll(selector);
+  const chartNodeList = document.querySelecotrAll(selector);
+  const chartEls = Array.from(chartNodeList);
 
-  const chartCxts = Array.prototype.map.call(chartEls, (el) => {
+  const chartCxts = chartEls.map(chartEls, (el) => {
     return el.getContext(contextType, contextAttributes);
   });
 
