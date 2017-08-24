@@ -58,8 +58,4 @@ typings/
 .env
 
 # webpack output directory
-<<<<<<< HEAD
 dist/
-=======
-dist/**/*
->>>>>>> a0a50527448de742e0d5732a6aa84c3a085ce456
