@@ -13,7 +13,8 @@ class Context {
   }
 
   pipe(callback) {
-    this.ctxs.forEach(callback);
+    this.ctxs.forEach((ctx) => {
+    });
     return this;
   }
 }
