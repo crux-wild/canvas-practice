@@ -20,7 +20,7 @@ function main() {
       <Chart id="char-one" witdh="500" height="500" />
       <img id="image-actor" src={actorImgSrc} style={{ display: 'none' }} />
       <img id="image-hacktool" src={hacktoolImgSrc} style={{ display: 'none' }} />
-      <img id="image-lost-host" src={losthostImagSrc} style={{ display: 'none' }} />
+      <img id="image-losthost" src={losthostImagSrc} style={{ display: 'none' }} />
     </content>,
     document.querySelector('main'),
   );

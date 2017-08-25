@@ -101,7 +101,7 @@ function getIconSelector(icon) {
     switch (icon) {
       case 'hacktool': return  '#image-hacktool';
       break;
-      case 'losthost': return '#image-lost-host';
+      case 'losthost': return '#image-losthost';
       break;
       default: return '#image-actor';
     }
@@ -109,16 +109,26 @@ function getIconSelector(icon) {
 
 function drawCircleIcon(options = { x: 0, y: 0 }) {
   return function() {
-    const { x, y, icon='actor' } = options;
-    const radius = 26;
     const ctx = this;
-    strokeOneCircle(ctx, { x, y , radius, strokeStyle: '#ccc' });
-    const selector = getIconSelector(icon);
-    const el = document.querySelector(selector);
-    const imageX = x - el.width / 2;
-    const imageY = y - el.height / 2;
-    options = { ...options, selector, x: imageX, y: imageY };
-    drawOneImage(ctx, options);
+    drawOneCircle(ctx, options);
+  }
+}
+
+function drawOneCircle(ctx, options = {}) {
+  const { x, y, icon='actor' } = options;
+  const radius = 26;
+  strokeOneCircle(ctx, { x, y , radius, strokeStyle: '#ccc' });
+
+  const selector = getIconSelector(icon);
+  const el = document.querySelector(selector);
+  const imageX = x - el.width / 2;
+  const imageY = y - el.height / 2;
+  options = { ...options, selector, x: imageX, y: imageY };
+  drawOneImage(ctx, options);
+}
+
+function drawLabel(options = { x: 0, y: 0 }) {
+  return function() {
   }
 }
 
