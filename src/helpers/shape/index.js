@@ -43,8 +43,9 @@ function fillOneCircle(ctx, options = {}) {
 }
 
 function strokeOneCircle(ctx, options = {}) {
-  const { x=0, y=0, radius=0, strokeStyle='' } = options;
+  const { x=0, y=0, radius=0, strokeStyle='', lineWidth='' } = options;
 
+  ctx.lineWidth = lineWidth;
   ctx.strokeStyle = strokeStyle;
   ctx.beginPath();
   ctx.arc(x, y, radius, 0, 2 * Math.PI);
@@ -91,8 +92,9 @@ function fillOneRect(ctx, options = {}) {
 }
 
 function strokeOneRect(ctx, options = {}) {
-  const { x=0, y=0, width=0, height=0, strokeStyle='' } = options;
+  const { x=0, y=0, width=0, height=0, strokeStyle='', lineWidth='' } = options;
 
+  ctx.lineWidth = lineWidth;
   ctx.strokeStyle = strokeStyle;
   ctx.strokeRect(x, y, width, height);
 }
@@ -115,10 +117,11 @@ function getIconSelector(icon) {
 }
 
 function drawOneCircle(ctx, options = {}) {
-  const { x, y, icon='actor' } = options;
+  const { x, y } = options;
   const radius = 26;
-  strokeOneCircle(ctx, { x, y , radius, strokeStyle: '#ccc' });
+  strokeOneCircle(ctx, { x, y , radius, strokeStyle: '#ccc', lineWidth: 2 });
 
+  const { icon } = options;
   const selector = getIconSelector(icon);
   const el = document.querySelector(selector);
   const imageX = x - el.width / 2;
@@ -135,15 +138,17 @@ function drawLabel(options = { x: 0, y: 0 }) {
 }
 
 function drawOneLabel(ctx, options) {
-  options = {...options, width: 160, height: 52, strokeStyle: '#ccc', maxWidth: 140 };
+  options = { ...options, width: 150, height: 52, strokeStyle: '#ccc', lineWidth: 1 };
   strokeOneRect(ctx, options);
 
-  const fontSize = 20;
-  const { x, y, width, height, maxWidth } = options;
+  const maxWidth = 130;
+  options = { ...options, maxWidth  };
+
+  const fontSize = 18;
+  const { x, y, width, height, lineWidth } = options;
   const textX = x + (width - maxWidth) / 2;
-  // @FIXME
-  const textY = y + (height) / 2;
-  const font = `${fontSize}px sans-serif`
+  const textY = y + (height + fontSize/2 ) / 2 + lineWidth;
+  const font = `normal normal lighter ${fontSize}px/1 sans-serif`;
   options = { ...options, font, fillStyle: '#ccc', x: textX, y: textY };
   fillOneText(ctx, options);
 }
