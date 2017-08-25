@@ -15,7 +15,7 @@ function main() {
   );
 
   context.src({ selector: '#char-one' })
-    .pipe(drawRect({ x: 50, y: 50, width: 50, height: 50 }));
+    .pipe(drawRect({ type: 'stroke', x: 50, y: 50, width: 150, height: 50, strokeStyle: '#ccc' }))
 }
 
-main()
+main();
