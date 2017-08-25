@@ -16,4 +16,10 @@ class Context {
   }
 }
 
-export default Context;
+function src(options = { selector: '' }) {
+  return new Context(options);
+}
+
+export default {
+  src
+};
