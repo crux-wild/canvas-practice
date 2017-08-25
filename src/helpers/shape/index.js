@@ -1,3 +1,27 @@
+function drawImage(options = {}) {
+  return function() {
+    const { selector='' } = options;
+    const ctx = this;
+    const nodeList = document.querySelectorAll(selector);
+    const els = Array.from(nodeList);
+
+    els.forEach((el) => {
+      const img = el;
+      const imgOptions = { ...options, img };
+      drawOneImage(ctx, imgOptions);
+    });
+  }
+}
+
+function drawOneImage(ctx, options = {}) {
+  const { img, x=0, y=0, width=0, height=0 } = options;
+  img.addEventListener('load', () => {
+    img.width = width || img.naturalWidth;
+    img.height = height || img.naturalHeight;
+    ctx.drawImage(img, x, y, img.width, img.height);
+  });
+}
+
 function drawCircle(options = { x: 0, y: 0, radius: 0, height: 0 }) {
   return function() {
     const { type='fill' } = options;
@@ -11,7 +35,7 @@ function drawCircle(options = { x: 0, y: 0, radius: 0, height: 0 }) {
       strokeOneCircle(ctx, options);
       break;
     }
-  }
+  };
 }
 
 function fillOneCircle(ctx, options = {}) {
@@ -81,4 +105,5 @@ function strokeOneRect(ctx, options = {}) {
 export {
   drawRect as default,
   drawCircle,
+  drawImage,
 };

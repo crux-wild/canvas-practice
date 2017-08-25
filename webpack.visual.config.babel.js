@@ -11,11 +11,21 @@ export default {
   },
 
   module: {
-    loaders: [{
-      test: /\.js?$/,
-      exclude: /node_modules/,
-      loader: 'babel-loader',
-    }],
+    loaders: [
+      {
+        test: /\.js|jsx$/,
+        exclude: /node_modules/,
+        loader: 'babel-loader',
+      },
+
+      {
+        test: /\.(gif|png|jpe?g|svg)$/i,
+        loaders: [
+          'file-loader?hash=sha512&digest=hex&name=[hash].[ext]',
+          'image-webpack-loader',
+        ]
+      }
+    ]
   },
 
   plugins: [
