@@ -97,6 +97,13 @@ function strokeOneRect(ctx, options = {}) {
   ctx.strokeRect(x, y, width, height);
 }
 
+function drawCircleIcon(options = { x: 0, y: 0 }) {
+  return function() {
+    const ctx = this;
+    drawOneCircle(ctx, options);
+  }
+}
+
 function getIconSelector(icon) {
     switch (icon) {
       case 'hacktool': return  '#image-hacktool';
@@ -105,13 +112,6 @@ function getIconSelector(icon) {
       break;
       default: return '#image-actor';
     }
-}
-
-function drawCircleIcon(options = { x: 0, y: 0 }) {
-  return function() {
-    const ctx = this;
-    drawOneCircle(ctx, options);
-  }
 }
 
 function drawOneCircle(ctx, options = {}) {
@@ -129,12 +129,34 @@ function drawOneCircle(ctx, options = {}) {
 
 function drawLabel(options = { x: 0, y: 0 }) {
   return function() {
-  }
+    const ctx = this;
+    drawOneLabel(ctx, options);
+  };
+}
+
+function drawOneLabel(ctx, options) {
+  options = {...options, width: 160, height: 52, strokeStyle: '#ccc', maxWidth: 140 };
+  strokeOneRect(ctx, options);
+
+  const fontSize = 20;
+  const { x, y, width, height, maxWidth } = options;
+  const textX = x + (width - maxWidth) / 2;
+  // @FIXME
+  const textY = y + (height) / 2;
+  const font = `${fontSize}px sans-serif`
+  options = { ...options, font, fillStyle: '#ccc', x: textX, y: textY };
+  fillOneText(ctx, options);
+}
+
+function fillOneText(ctx, options) {
+  const { text, x, y, fillStyle, font, maxWidth } = options;
+
+  ctx.fillStyle = fillStyle;
+  ctx.font = font;
+  ctx.fillText(text, x, y, maxWidth);
 }
 
 export {
-  drawRect as default,
-  drawCircle,
-  drawImage,
-  drawCircleIcon,
+  drawCircleIcon as default,
+  drawLabel,
 };
