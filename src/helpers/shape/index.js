@@ -102,7 +102,7 @@ function strokeOneRect(ctx, options = {}) {
 function drawCircleIcon(options = { x: 0, y: 0 }) {
   return function() {
     const ctx = this;
-    drawOneCircle(ctx, options);
+    drawOneCircleIcon(ctx, options);
   }
 }
 
@@ -116,10 +116,11 @@ function getIconSelector(icon) {
     }
 }
 
-function drawOneCircle(ctx, options = {}) {
+function drawOneCircleIcon(ctx, options = {}) {
   const { x, y } = options;
   const radius = 26;
   strokeOneCircle(ctx, { x, y , radius, strokeStyle: '#ccc', lineWidth: 2 });
+  fillOneCircle(ctx, { x, y, radius, fillStyle: '#fff' });
 
   const { icon } = options;
   const selector = getIconSelector(icon);
@@ -141,10 +142,8 @@ function drawOneLabel(ctx, options) {
   options = { ...options, width: 150, height: 52, strokeStyle: '#ccc', lineWidth: 1 };
   strokeOneRect(ctx, options);
 
-  const maxWidth = 130;
-  options = { ...options, maxWidth  };
-
-  const fontSize = 18;
+  const fontSize = 16;
+  const maxWidth = 80;
   const { x, y, width, height, lineWidth } = options;
   const textX = x + (width - maxWidth) / 2;
   const textY = y + (height + fontSize/2 ) / 2 + lineWidth;
@@ -154,11 +153,11 @@ function drawOneLabel(ctx, options) {
 }
 
 function fillOneText(ctx, options) {
-  const { text, x, y, fillStyle, font, maxWidth } = options;
+  const { text, x, y, fillStyle, font } = options;
 
   ctx.fillStyle = fillStyle;
   ctx.font = font;
-  ctx.fillText(text, x, y, maxWidth);
+  ctx.fillText(text, x, y);
 }
 
 function drawLine(options = { startX: 0, startY: 0, endX: 0, endY: 0 }) {
@@ -178,8 +177,26 @@ function strokeOneLine(ctx, options = {}) {
   ctx.stroke();
 }
 
+function drawIconLabel(options = { x: 0, y: 0 }) {
+  return function() {
+    const ctx = this;
+    drawOneIconLabel(ctx, options);
+  };
+}
+
+function drawOneIconLabel(ctx, options = {}) {
+  drawOneLabel(ctx, options);
+
+  const iconRadius = 26;
+  const { x, y } = options;
+  const iconY = y + iconRadius;
+  options = { ...options, y: iconY  };
+  drawOneCircleIcon(ctx, options);
+}
+
 export {
   drawCircleIcon as default,
   drawLine,
   drawLabel,
+  drawIconLabel,
 };
