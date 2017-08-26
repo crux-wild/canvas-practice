@@ -4,7 +4,7 @@ import React from 'react';
 
 import Chart from 'components/Chart';
 
-import drawCircleIcon, { drawLabel } from 'helpers/shape';
+import drawCircleIcon, { drawLabel, drawLine } from 'helpers/shape';
 
 import context from 'helpers/context';
 
@@ -29,7 +29,8 @@ function main() {
     .pipe(drawCircleIcon({ icon: 'actor', x: 50, y: 50 }))
     .pipe(drawCircleIcon({ icon: 'hacktool', x: 100, y: 100 }))
     .pipe(drawCircleIcon({ icon: 'losthost', x: 150, y: 150 }))
-    .pipe(drawLabel({ text: 'armypress.org', x: 300, y: 300 }))
+    .pipe(drawLabel({ text: 'armypress.org', x: 200, y: 200 }))
+    .pipe(drawLine({ startX: 300, startY: 300, endX: 300, endY: 400, strokeStyle: "#ccc" }))
 }
 
 main();

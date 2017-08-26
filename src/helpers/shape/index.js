@@ -161,7 +161,25 @@ function fillOneText(ctx, options) {
   ctx.fillText(text, x, y, maxWidth);
 }
 
+function drawLine(options = { startX: 0, startY: 0, endX: 0, endY: 0 }) {
+  return function() {
+    const ctx = this;
+    strokeOneLine(ctx, options);
+  };
+}
+
+function strokeOneLine(ctx, options = {}) {
+  const { strokeStyle='', startX=0, startY=0, endX=0, endY=0, lineWidth=1 } = options;
+  ctx.beginPath();
+  ctx.strokeStyle = strokeStyle;
+  ctx.lineWidth = lineWidth;
+  ctx.moveTo(startX, startY);
+  ctx.lineTo(endX, endY);
+  ctx.stroke();
+}
+
 export {
   drawCircleIcon as default,
+  drawLine,
   drawLabel,
 };
