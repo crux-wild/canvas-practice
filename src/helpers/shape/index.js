@@ -138,30 +138,77 @@ function drawLabel(options = { x: 0, y: 0 }) {
   };
 }
 
+function getOneLineText({ ctx, text, start, end, textWidth }) {
+  let subText = text.substring(start, end);
+  let computedWidth = ctx.measureText(subText).width;
+  while ((computedWidth > textWidth) && ((end - start) >= 1)) {
+    let length = end - start;
+    end = start + Math.ceil(length / 2);
+    subText = text.substring(start, end);
+    computedWidth = ctx.measureText(subText).width;
+  }
+
+  // @FIXME
+  let offset = (end - start) / 2;
+  while ((computedWidth < textWidth) && (offset) >= 1) {
+    end = end + offset;
+    subText = text.substring(start, end);
+    computedWidth = ctx.measureText(subText).width;
+    offset = Math.ceil(offset / 2);
+  }
+  return subText;
+}
+
+function convertToMultiLineText(ctx, options) {
+  const { text, textWidth=0, font={} } = options;
+  ctx.font = getFontFormat(font);
+
+  const multiLineText = [];
+  let ptr = 0;
+  while (ptr < text.length) {
+    let oneLineText = getOneLineText({ ctx, text, start: ptr, end: text.length, textWidth });
+    multiLineText.push(oneLineText);
+    ptr = ptr + oneLineText.length + 1;
+  }
+  return multiLineText;
+}
+
+function getLineHeight(options) {
+  const { font } = options;
+  let { size, lineHeight } = font;
+  size = parseFloat(size);
+  lineHeight = parseFloat(lineHeight);
+  return size * lineHeight;
+}
+
 function drawOneLabel(ctx, options) {
-  const { padding={}, textWidth=100, lineHeight=1, font={} } = options;
+  let pointer = options;
+  const textWidth = 100;
+  options = { ...options, textWidth };
+  const { padding={}, font={} } = options;
   const { top=0, bottom=top } = padding;
   const { left=0, right=left } = padding;
 
-  let { size: fontSize } = font;
-  fontSize = parseInt(fontSize, 10);
-
+  const multiLineText = convertToMultiLineText(ctx, options);
+  const line = multiLineText.length;
   const width = left + textWidth + right;
-  const height = top + (fontSize * lineHeight) + bottom;
+  const height = top + getLineHeight(options) * line + bottom;
   options = { ...options, width, height, strokeStyle: '#ccc', lineWidth: 1 };
   strokeOneRect(ctx, options);
 
-  const { x, y } = options;
+  const { x, y, text } = options;
   const { lineWidth=2 } = options;
   const textX = x + left;
-  const textY = y + (height + (fontSize * lineHeight)/2 ) / 2 + lineWidth;
-  options = { ...options, textWidth, fillStyle: '#ccc', x: textX, y: textY };
+  const textY = y + lineWidth + top +  getLineHeight(options);
+  options = { ...options, textWidth, fillStyle: '#ccc', x: textX, y: textY, text: multiLineText };
   fillOneText(ctx, options);
+  const label = { width, height };
+  pointer.label = label;
 }
 
 function fillOneText(ctx, options) {
   const {
-    text='',
+    text=[],
     x=0,
     y=0,
     fillStyle='',
@@ -169,6 +216,15 @@ function fillOneText(ctx, options) {
     textWidth=100
   } = options;
 
+  text.forEach((text, index) => {
+    const textY = y + index * getLineHeight(options);
+    ctx.font = getFontFormat(font);
+    ctx.fillStyle = fillStyle;
+    ctx.fillText(text, x, textY);
+  });
+}
+
+function getFontFormat(font) {
   const {
     style='normal',
     variant='normal',
@@ -178,10 +234,7 @@ function fillOneText(ctx, options) {
     family='"Open Sans", sans-serif',
   } = font;
 
-  const fontString = `${style} ${variant} ${weight} ${size}/${lineHeight} ${family}`;
-  ctx.fillStyle = fillStyle;
-  ctx.font = fontString;
-  ctx.fillText(text, x, y);
+  return `${style} ${variant} ${weight} ${size}/${lineHeight} ${family}`;
 }
 
 function drawLine(options = { startX: 0, startY: 0, endX: 0, endY: 0 }) {
@@ -212,22 +265,23 @@ function drawOneIconLabel(ctx, options = {}) {
   const font = {
     weight: 'lighter',
     size: '16px',
-    lineHeight: 1,
+    lineHeight: '1.4',
   };
 
   const padding = {
-    top: 18,
-    right: 14,
-    left: 32,
-    bottom: 18,
+    top: 15,
+    right: 16,
+    left: 34,
+    bottom: 15,
   };
   options = { ...options, padding, font };
   drawOneLabel(ctx, options);
 
+  const { label: { height=0 } } = options;
   const iconRadius = 26;
-  const { x, y } = options;
-  const iconY = y + iconRadius;
-  options = { ...options, y: iconY  };
+  const { x, y, label } = options;
+  const iconY = y + height / 2;
+  options = { ...options, y: iconY };
   drawOneCircleIcon(ctx, options);
 }
 
