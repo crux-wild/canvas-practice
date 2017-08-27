@@ -296,7 +296,7 @@ function drawOneIconText(ctx, options) {
   const multiLineText = convertToMultiLineText(ctx, options);
 
   const { x, y } = options;
-  const font = { size: '15px', lineHeight: '1' };
+  const font = { size: '15px', lineHeight: '1', weight: 'lighter' };
   options = { ...options, font };
 
   const fontFormat = getFontFormat(font);
