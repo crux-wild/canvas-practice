@@ -139,24 +139,48 @@ function drawLabel(options = { x: 0, y: 0 }) {
 }
 
 function drawOneLabel(ctx, options) {
-  options = { ...options, width: 150, height: 52, strokeStyle: '#ccc', lineWidth: 1 };
+  const { padding={}, textWidth=100, lineHeight=1, font={} } = options;
+  const { top=0, bottom=top } = padding;
+  const { left=0, right=left } = padding;
+
+  let { size: fontSize } = font;
+  fontSize = parseInt(fontSize, 10);
+
+  const width = left + textWidth + right;
+  const height = top + (fontSize * lineHeight) + bottom;
+  options = { ...options, width, height, strokeStyle: '#ccc', lineWidth: 1 };
   strokeOneRect(ctx, options);
 
-  const fontSize = 16;
-  const maxWidth = 80;
-  const { x, y, width, height, lineWidth } = options;
-  const textX = x + (width - maxWidth) / 2;
-  const textY = y + (height + fontSize/2 ) / 2 + lineWidth;
-  const font = `normal normal lighter ${fontSize}px/1 sans-serif`;
-  options = { ...options, font, fillStyle: '#ccc', x: textX, y: textY };
+  const { x, y } = options;
+  const { lineWidth=2 } = options;
+  const textX = x + left;
+  const textY = y + (height + (fontSize * lineHeight)/2 ) / 2 + lineWidth;
+  options = { ...options, textWidth, fillStyle: '#ccc', x: textX, y: textY };
   fillOneText(ctx, options);
 }
 
 function fillOneText(ctx, options) {
-  const { text, x, y, fillStyle, font } = options;
+  const {
+    text='',
+    x=0,
+    y=0,
+    fillStyle='',
+    font={},
+    textWidth=100
+  } = options;
 
+  const {
+    style='normal',
+    variant='normal',
+    weight='normal',
+    size='16px',
+    lineHeight='1',
+    family='"Open Sans", sans-serif',
+  } = font;
+
+  const fontString = `${style} ${variant} ${weight} ${size}/${lineHeight} ${family}`;
   ctx.fillStyle = fillStyle;
-  ctx.font = font;
+  ctx.font = fontString;
   ctx.fillText(text, x, y);
 }
 
@@ -185,6 +209,19 @@ function drawIconLabel(options = { x: 0, y: 0 }) {
 }
 
 function drawOneIconLabel(ctx, options = {}) {
+  const font = {
+    weight: 'lighter',
+    size: '16px',
+    lineHeight: 1,
+  };
+
+  const padding = {
+    top: 18,
+    right: 14,
+    left: 32,
+    bottom: 18,
+  };
+  options = { ...options, padding, font };
   drawOneLabel(ctx, options);
 
   const iconRadius = 26;

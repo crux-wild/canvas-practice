@@ -28,9 +28,8 @@ function main() {
   context.src({ selector: '#char-one' })
     .pipe(drawCircleIcon({ icon: 'actor', x: 50, y: 50 }))
     .pipe(drawCircleIcon({ icon: 'hacktool', x: 100, y: 100 }))
-    .pipe(drawLabel({ text: 'armypress.org', x: 200, y: 200 }))
-    .pipe(drawLine({ startX: 300, startY: 300, endX: 300, endY: 400, strokeStyle: "#ccc" }))
-    .pipe(drawIconLabel({ x: 140, y: 140, icon: 'actor', text: 'armypress.org' }))
+    .pipe(drawIconLabel({ x: 140, y: 140, icon: 'hacktool', text: 'armypress.org' }))
+    .pipe(drawIconLabel({ x: 300, y: 300, icon: 'losthost', text: '大量与"Sofacy"组织相关的可疑域名。' }))
 }
 
 main();
