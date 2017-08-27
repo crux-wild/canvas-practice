@@ -4,7 +4,7 @@ import React from 'react';
 
 import Chart from 'components/Chart';
 
-import drawCircleIcon, { drawLabel, drawLine, drawIconLabel } from 'helpers/shape';
+import drawCircleIcon, { drawLabel, drawLine, drawIconLabel, drawIconText } from 'helpers/shape';
 
 import context from 'helpers/context';
 
@@ -26,10 +26,9 @@ function main() {
   );
 
   context.src({ selector: '#char-one' })
-    .pipe(drawCircleIcon({ icon: 'actor', x: 50, y: 50 }))
-    .pipe(drawCircleIcon({ icon: 'hacktool', x: 100, y: 100 }))
-    .pipe(drawIconLabel({ x: 140, y: 140, icon: 'hacktool', text: 'armypress.org' }))
-    .pipe(drawIconLabel({ x: 300, y: 300, icon: 'losthost', text: '大量与"Sofacy"组织相关的可疑域名。' }))
+    .pipe(drawIconText({ icon: 'actor', x: 50, y: 50, text: 'APT28' }))
+    .pipe(drawIconLabel({ x: 100, y: 100, icon: 'hacktool', text: 'armypress.org' }))
+    .pipe(drawIconLabel({ x: 200, y: 200, icon: 'losthost', text: '大量与"Sofacy"组织相关的可疑域名。' }))
 }
 
 main();

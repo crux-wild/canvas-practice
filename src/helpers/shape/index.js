@@ -102,6 +102,8 @@ function strokeOneRect(ctx, options = {}) {
 function drawCircleIcon(options = { x: 0, y: 0 }) {
   return function() {
     const ctx = this;
+    const radius = 26;
+    options = { ...options, radius };
     drawOneCircleIcon(ctx, options);
   }
 }
@@ -118,7 +120,7 @@ function getIconSelector(icon) {
 
 function drawOneCircleIcon(ctx, options = {}) {
   const { x, y } = options;
-  const radius = 26;
+  const { radius }= options;
   strokeOneCircle(ctx, { x, y , radius, strokeStyle: '#ccc', lineWidth: 2 });
   fillOneCircle(ctx, { x, y, radius, fillStyle: '#fff' });
 
@@ -138,25 +140,16 @@ function drawLabel(options = { x: 0, y: 0 }) {
   };
 }
 
+// @FIXME 需要用二分查找重写
 function getOneLineText({ ctx, text, start, end, textWidth }) {
-  let subText = text.substring(start, end);
-  let computedWidth = ctx.measureText(subText).width;
-  while ((computedWidth > textWidth) && ((end - start) >= 1)) {
-    let length = end - start;
-    end = start + Math.ceil(length / 2);
-    subText = text.substring(start, end);
-    computedWidth = ctx.measureText(subText).width;
-  }
+  for (let index = 0; index <= text.length; index++) {
+    const subText = text.substring(start, end - index);
+    const computedWidth = ctx.measureText(subText).width;
 
-  // @FIXME
-  let offset = (end - start) / 2;
-  while ((computedWidth < textWidth) && (offset) >= 1) {
-    end = end + offset;
-    subText = text.substring(start, end);
-    computedWidth = ctx.measureText(subText).width;
-    offset = Math.ceil(offset / 2);
+    if (computedWidth <= textWidth) {
+      return subText;
+    }
   }
-  return subText;
 }
 
 function convertToMultiLineText(ctx, options) {
@@ -164,11 +157,12 @@ function convertToMultiLineText(ctx, options) {
   ctx.font = getFontFormat(font);
 
   const multiLineText = [];
-  let ptr = 0;
-  while (ptr < text.length) {
-    let oneLineText = getOneLineText({ ctx, text, start: ptr, end: text.length, textWidth });
+  const end = text.length;
+  let start = 0;
+  while (start < text.length) {
+    const oneLineText = getOneLineText({ ctx, text, start, end, textWidth });
     multiLineText.push(oneLineText);
-    ptr = ptr + oneLineText.length + 1;
+    start = start + oneLineText.length;
   }
   return multiLineText;
 }
@@ -183,7 +177,7 @@ function getLineHeight(options) {
 
 function drawOneLabel(ctx, options) {
   let pointer = options;
-  const textWidth = 100;
+  const textWidth = 110;
   options = { ...options, textWidth };
   const { padding={}, font={} } = options;
   const { top=0, bottom=top } = padding;
@@ -269,10 +263,10 @@ function drawOneIconLabel(ctx, options = {}) {
   };
 
   const padding = {
-    top: 15,
+    top: 8,
     right: 16,
     left: 34,
-    bottom: 15,
+    bottom: 22,
   };
   options = { ...options, padding, font };
   drawOneLabel(ctx, options);
@@ -281,13 +275,44 @@ function drawOneIconLabel(ctx, options = {}) {
   const iconRadius = 26;
   const { x, y, label } = options;
   const iconY = y + height / 2;
-  options = { ...options, y: iconY };
+  const radius = 26;
+  options = { ...options, y: iconY, radius };
   drawOneCircleIcon(ctx, options);
+}
+
+function drawIconText(options = { x: 0, y: 0 }) {
+  return function() {
+    const ctx = this;
+    drawOneIconText(ctx, options);
+  };
+}
+
+function drawOneIconText(ctx, options) {
+  const radius = 26;
+  options = { ...options, radius };
+  drawOneCircleIcon(ctx, options);
+
+  options = { ...options, textWidth: 100 };
+  const multiLineText = convertToMultiLineText(ctx, options);
+
+  const { x, y } = options;
+  const font = { size: '15px', lineHeight: '1' };
+  options = { ...options, font };
+
+  const fontFormat = getFontFormat(font);
+  ctx.font = fontFormat;
+  const lines = multiLineText.length;
+  const computedWidth = ctx.measureText(multiLineText).width;
+  const textY = y +  lines * getLineHeight(options) + radius;
+  const textX = x - (computedWidth / 2);
+  options = { ...options, text: multiLineText, font, fillStyle: '#888', y: textY, x: textX };
+  fillOneText(ctx, options);
 }
 
 export {
   drawCircleIcon as default,
   drawLine,
   drawLabel,
+  drawIconText,
   drawIconLabel,
 };
