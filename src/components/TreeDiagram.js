@@ -54,6 +54,7 @@ class TreeDiagram extends React.Component {
   }
 
   resize() {
+    // @FIXME 屏幕递增和递减应该使用两套逻辑
     const { innerWidth, innerHeight } = window;
     if (((innerWidth >= 682) && (innerHeight >= 383)) || (!this.loaded)) {
       this.canvasEl.width = innerWidth;
