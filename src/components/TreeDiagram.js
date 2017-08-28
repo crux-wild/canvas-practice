@@ -32,8 +32,8 @@ class TreeDiagram extends React.Component {
 
   getLayout() {
     const { width, height } = this.canvasEl;
-    const cols = [ 0.05, 0.305, 0.455, 0.805 ];
-    const rows = [ 0.1, 0.4, 0.7 ];
+    const cols = [ 0.05, 0.305, 0.455, 0.95 ];
+    const rows = [ 0.1, 0.5, 0.9 ];
     const coordinates = { cols, rows };
     return fluidLayout({ width, height, coordinates });
   }
@@ -51,7 +51,6 @@ class TreeDiagram extends React.Component {
 
   resize() {
     const { innerWidth, innerHeight } = window;
-
     if (((innerWidth >= 682) && (innerHeight >= 383)) || (!this.loaded)) {
       this.canvasEl.width = innerWidth;
       this.canvasEl.height = innerHeight;
@@ -66,7 +65,6 @@ class TreeDiagram extends React.Component {
   repaint() {
     const { cols, rows } = this.getLayout();
     const { loaded, canvasEl } = this;
-
     context.src({ el: canvasEl })
        // 骨架部分
       .pipe(drawLine({ startX: cols[0], startY: rows[1], endX: cols[2], endY: rows[1] }))
