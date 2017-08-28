@@ -5,17 +5,25 @@ function drawImage(options = {}) {
   }
 }
 
-function drawOneImage(ctx, options = {}) {
-  const { x=0, y=0, width=0, height=0, selector='' } = options;
-  const img = document.querySelector(selector);
-  // @FIXME 加载逻辑有问题
-  //img.addEventListener('load', () => {
-    img.width = width || img.naturalWidth;
-    img.height = height || img.naturalHeight;
-    ctx.drawImage(img, x, y, img.width, img.height);
-  //});
+function drawOneImageNow(ctx, options = {}) {
+  const { x=0, y=0, width=0, height=0, img } = options;
+  img.width = width || img.naturalWidth;
+  img.height = height || img.naturalHeight;
+  ctx.drawImage(img, x, y, img.width, img.height);
+}
 
-  return { width: img.width, height: img.height };
+function drawOneImage(ctx, options = {}) {
+  const { selector='' } = options;
+  const img = document.querySelector(selector);
+  options = { ...options, img };
+
+  if (options.loaded) {
+    drawOneImageNow(ctx, options);
+  } else {
+    img.addEventListener('load', () => {
+      drawOneImageNow(ctx, options);
+    });
+  }
 }
 
 function drawCircle(options = { x: 0, y: 0, radius: 0, height: 0 }) {

@@ -1,19 +1,18 @@
-function getFluidLayout({ width=0, height=0, pointers={} }) {
-  const { x=[], y=[] } = pointers;
-
-  const cols = x.map((percentage) => {
+function fluidLayout({ width=0, height=0, coordinates={} }) {
+  const { cols=[], rows=[] } = coordinates;
+  const computedCols = cols.map((percentage) => {
     return percentage * width;
   });
-  const rows = y.map((percentage) => {
+  const computedRows = rows.map((percentage) => {
     return percentage * height;
   });
-
-  return {
-    cols,
-    rows,
+  const computedCoordinates = {
+    cols: computedCols,
+    rows: computedRows,
   };
+  return computedCoordinates;
 }
 
 export {
-  getFluidLayout as default,
+  fluidLayout as default,
 };

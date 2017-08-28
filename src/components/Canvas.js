@@ -1,6 +1,6 @@
 import React from 'react';
 
-class Chart extends React.Component {
+class Canvas extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -15,4 +15,4 @@ class Chart extends React.Component {
   }
 }
 
-export default Chart;
+export default Canvas;
