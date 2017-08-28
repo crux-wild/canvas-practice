@@ -20,9 +20,13 @@ class TreeDiagram extends React.Component {
     super(props);
   }
 
+  componentWillMount() {
+    this.canvasHash = Date.now();
+  }
+
   componentDidMount() {
-    const { selector } = this.props;
-    const canvasEl =  document.querySelector(selector);
+    const { canvasHash } = this;
+    const canvasEl =  document.getElementById(canvasHash);
     this.loaded = false;
     this.canvasEl = canvasEl;
 
@@ -89,6 +93,7 @@ class TreeDiagram extends React.Component {
     const imageStyle = { display: 'none' };
     return (
       <div>
+        <canvas id={this.canvasHash} ></canvas>
         <img id="image-actor" src={actorImageUrl} style={imageStyle} />
         <img id="image-hacktool" src={hacktoolImageUrl} style={imageStyle} />
         <img id="image-losthost" src={losthostImageUrl} style={imageStyle} />
