@@ -21,6 +21,7 @@ import drawCircleIcon, {
   drawIconText
 } from 'helpers/shape';
 
+// @TODO nodeList 需要通过面向对象复用
 function repaint() {
   const nodeList =  document.querySelectorAll('#chart-one');
   const canvasEl = nodeList[0];
