@@ -176,28 +176,31 @@ function getLineHeight(options) {
 }
 
 function drawOneLabel(ctx, options) {
-  let pointer = options;
   const textWidth = 110;
   options = { ...options, textWidth };
   const { padding={}, font={} } = options;
   const { top=0, bottom=top } = padding;
   const { left=0, right=left } = padding;
 
+  const { x, y } = options;
   const multiLineText = convertToMultiLineText(ctx, options);
   const line = multiLineText.length;
   const width = left + textWidth + right;
   const height = top + getLineHeight(options) * line + bottom;
-  options = { ...options, width, height, strokeStyle: '#ccc', lineWidth: 1 };
+  const labelY = y - height / 2;
+  const strokeStyle = '#ccc';
+  const fillStyle = '#fff';
+  options = { ...options, width, height, strokeStyle, fillStyle, lineWidth: 1, y: labelY };
   strokeOneRect(ctx, options);
+  fillOneRect(ctx, options);
 
-  const { x, y, text } = options;
+  const { text } = options;
   const { lineWidth=2 } = options;
   const textX = x + left;
-  const textY = y + lineWidth + top +  getLineHeight(options);
+  const textY = y + height / 2 - getLineHeight(options) * line;
   options = { ...options, textWidth, fillStyle: '#ccc', x: textX, y: textY, text: multiLineText };
   fillOneText(ctx, options);
   const label = { width, height };
-  pointer.label = label;
 }
 
 function fillOneText(ctx, options) {
@@ -234,6 +237,8 @@ function getFontFormat(font) {
 function drawLine(options = { startX: 0, startY: 0, endX: 0, endY: 0 }) {
   return function() {
     const ctx = this;
+    const strokeStyle = '#ccc';
+    options = { ...options, strokeStyle };
     strokeOneLine(ctx, options);
   };
 }
@@ -271,12 +276,9 @@ function drawOneIconLabel(ctx, options = {}) {
   options = { ...options, padding, font };
   drawOneLabel(ctx, options);
 
-  const { label: { height=0 } } = options;
-  const iconRadius = 26;
   const { x, y, label } = options;
-  const iconY = y + height / 2;
   const radius = 26;
-  options = { ...options, y: iconY, radius };
+  options = { ...options, radius };
   drawOneCircleIcon(ctx, options);
 }
 
@@ -296,11 +298,12 @@ function drawOneIconText(ctx, options) {
   const multiLineText = convertToMultiLineText(ctx, options);
 
   const { x, y } = options;
-  const font = { size: '15px', lineHeight: '1', weight: 'lighter' };
+  const font = { size: '15px', lineHeight: '1' };
   options = { ...options, font };
 
   const fontFormat = getFontFormat(font);
   ctx.font = fontFormat;
+
   const lines = multiLineText.length;
   const computedWidth = ctx.measureText(multiLineText).width;
   const textY = y +  lines * getLineHeight(options) + radius;

@@ -32,21 +32,30 @@ function main() {
     document.querySelector('main'),
   );
 
-  // @TODO: 需要重构
   const nodeList = document.querySelectorAll('#char-one');
   const canvasEl = nodeList[0];
   const { width, height } = canvasEl;
-  const pointers = { x: [0.05, 0.4, 0.8], y: [0.1, 0.4, 0.8]  };
+  const pointers = { x: [ 0.05, 0.355, 0.455, 0.805 ], y: [ 0.1, 0.4, 0.7 ] };
   const { cols, rows } = getFluidLayout({ width, height, pointers })
 
   context.src({ nodeList })
+     // 骨架部分
+    .pipe(drawLine({ startX: cols[0], startY: rows[1], endX: cols[2], endY: rows[1] }))
+      .pipe(drawLine({ startX: cols[1], startY: rows[0], endX: cols[1], endY: rows[1] }))
+      .pipe(drawLine({ startX: cols[1], startY: rows[1], endX: cols[1], endY: rows[2] }))
+        .pipe(drawLine({ startX: cols[1], startY: rows[0], endX: cols[2], endY: rows[0] }))
+        .pipe(drawLine({ startX: cols[1], startY: rows[2], endX: cols[2], endY: rows[2] }))
+          .pipe(drawLine({ startX: cols[2], startY: rows[0], endX: cols[3], endY: rows[0] }))
+          .pipe(drawLine({ startX: cols[2], startY: rows[1], endX: cols[3], endY: rows[1] }))
+          .pipe(drawLine({ startX: cols[2], startY: rows[2], endX: cols[3], endY: rows[2] }))
+    // 图形部分
     .pipe(drawIconLabel({ x: cols[0], y: rows[1], icon: 'hacktool', text: 'armypress.org' }))
-      .pipe(drawIconLabel({ x: cols[1], y: rows[0], icon: 'losthost', text: '大量与"Sofacy"组织相关的可疑域名。' }))
-      .pipe(drawIconLabel({ x: cols[1], y: rows[1], icon: 'losthost', text: '大量与"Sofacy"组织相关的可疑域名。' }))
-      .pipe(drawIconLabel({ x: cols[1], y: rows[2], icon: 'losthost', text: '大量与"Sofacy"组织相关的可疑域名。' }))
-        .pipe(drawIconText({ x: cols[2], y: rows[0], icon: 'actor', text: 'APT28', textWidth: 75 }))
-        .pipe(drawIconText({ x: cols[2], y: rows[1], icon: 'actor', text: 'APT28', textWidth: 75 }))
-        .pipe(drawIconText({ x: cols[2], y: rows[2], icon: 'actor', text: 'APT28', textWidth: 75 }))
+      .pipe(drawIconLabel({ x: cols[2], y: rows[0], icon: 'losthost', text: '大量与"Sofacy"组织相关的可疑域名。' }))
+      .pipe(drawIconLabel({ x: cols[2], y: rows[1], icon: 'losthost', text: '大量与"Sofacy"组织相关的可疑域名。' }))
+      .pipe(drawIconLabel({ x: cols[2], y: rows[2], icon: 'losthost', text: '大量与"Sofacy"组织相关的可疑域名。' }))
+        .pipe(drawIconText({ x: cols[3], y: rows[0], icon: 'actor', text: 'APT28' }))
+        .pipe(drawIconText({ x: cols[3], y: rows[1], icon: 'actor', text: 'APT28' }))
+        .pipe(drawIconText({ x: cols[3], y: rows[2], icon: 'actor', text: 'APT28' }))
 }
 
 main();
