@@ -21,21 +21,11 @@ import drawCircleIcon, {
   drawIconText
 } from 'helpers/shape';
 
-function main() {
-  ReactDOM.render(
-    <content>
-      <Chart id="char-one" witdh="700" height="500" />
-      <img id="image-actor" src={actorImgSrc} style={{ display: 'none' }} />
-      <img id="image-hacktool" src={hacktoolImgSrc} style={{ display: 'none' }} />
-      <img id="image-losthost" src={losthostImagSrc} style={{ display: 'none' }} />
-    </content>,
-    document.querySelector('main'),
-  );
-
-  const nodeList = document.querySelectorAll('#char-one');
+function repaint() {
+  const nodeList =  document.querySelectorAll('#chart-one');
   const canvasEl = nodeList[0];
   const { width, height } = canvasEl;
-  const pointers = { x: [ 0.05, 0.355, 0.455, 0.805 ], y: [ 0.1, 0.4, 0.7 ] };
+  const pointers = { x: [ 0.05, 0.305, 0.455, 0.805 ], y: [ 0.1, 0.4, 0.7 ] };
   const { cols, rows } = getFluidLayout({ width, height, pointers })
 
   context.src({ nodeList })
@@ -57,5 +47,82 @@ function main() {
         .pipe(drawIconText({ x: cols[3], y: rows[1], icon: 'actor', text: 'APT28' }))
         .pipe(drawIconText({ x: cols[3], y: rows[2], icon: 'actor', text: 'APT28' }))
 }
+
+function resize() {
+  const nodeList =  document.querySelectorAll('#chart-one');
+  const canvasEl = nodeList[0];
+  if ((window.innerWidth >= 682) && (window.innerHeight >= 383)) {
+    canvasEl.width = window.innerWidth;
+    canvasEl.height = window.innerHeight;
+    repaint();
+  }
+}
+
+function main() {
+  ReactDOM.render(
+    <content>
+      <Chart id="chart-one" witdh="700" height="500" />
+      <img id="image-actor" src={actorImgSrc} style={{ display: 'none' }} />
+      <img id="image-hacktool" src={hacktoolImgSrc} style={{ display: 'none' }} />
+      <img id="image-losthost" src={losthostImagSrc} style={{ display: 'none' }} />
+    </content>,
+    document.querySelector('main'),
+  );
+
+  resize();
+}
+
+var optimizedResize = (function() {
+
+    var callbacks = [],
+        running = false;
+
+    // fired on resize event
+    function resize() {
+
+        if (!running) {
+            running = true;
+
+            if (window.requestAnimationFrame) {
+                window.requestAnimationFrame(runCallbacks);
+            } else {
+                setTimeout(runCallbacks, 66);
+            }
+        }
+
+    }
+
+    // run the actual callbacks
+    function runCallbacks() {
+
+        callbacks.forEach(function(callback) {
+            callback();
+        });
+
+        running = false;
+    }
+
+    // adds callback to loop
+    function addCallback(callback) {
+
+        if (callback) {
+            callbacks.push(callback);
+        }
+
+    }
+
+    return {
+        // public method to add additional callback
+        add: function(callback) {
+            if (!callbacks.length) {
+                window.addEventListener('resize', resize);
+            }
+            addCallback(callback);
+        }
+    }
+}());
+
+// start process
+optimizedResize.add(resize);
 
 main();
