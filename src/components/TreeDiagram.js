@@ -18,9 +18,6 @@ import drawCircleIcon, {
 class TreeDiagram extends React.Component {
   constructor(props) {
     super(props);
-  }
-
-  componentWillMount() {
     this.canvasHash = Date.now();
   }
 

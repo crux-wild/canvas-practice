@@ -24,7 +24,25 @@ export default {
           'file-loader?hash=sha512&digest=hex&name=[hash].[ext]',
           'image-webpack-loader',
         ]
-      }
+      },
+
+      {
+        test: /\.css$/,
+        use: [
+          {
+            loader: 'style-loader',
+          },
+          {
+            loader: 'css-loader',
+            options: {
+              importLoaders: 1,
+            }
+          },
+          {
+            loader: 'postcss-loader',
+          }
+        ]
+      },
     ]
   },
 
