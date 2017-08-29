@@ -18,9 +18,9 @@ import drawCircleIcon, {
 class TreeDiagram extends React.Component {
   constructor(props) {
     super(props);
-    this.canvasHash = Date.now();
     this.minWidth = 682;
     this.minHeight = 383;
+    this.canvasHash = Date.now();
   }
 
   componentDidMount() {
@@ -29,7 +29,7 @@ class TreeDiagram extends React.Component {
     this.loaded = false;
     this.canvasEl = canvasEl;
 
-    this.resize();
+    this.firstTimeResize();
     this.bindResizeEvent();
   }
 
@@ -52,48 +52,83 @@ class TreeDiagram extends React.Component {
     });
   }
 
-  resize() {
-    const { minHeight, minWidth } = this;
+  firstTimeResize() {
+    const { minHeight, minWidth, canvasEl } = this;
     const { innerWidth, innerHeight } = window;
-    if (!(this.loaded)) {
-      if ((innerWidth < minWidth) || (innerHeight < minHeight)) {
-        this.canvasEl.width = minWidth - 4;
-        this.canvasEl.height = minHeight - 4;
-      }
 
-      this.repaint();
-      this.loaded = true;
+    if ((innerWidth < minWidth) || (innerHeight < minHeight)) {
+      canvasEl.width = minWidth - 4;
+      canvasEl.height = minHeight - 4;
+    } else {
+      canvasEl.width = innerWidth - 4;
+      canvasEl.height = innerHeight - 4;
     }
+    this.repaint();
+    this.loaded = true;
+  }
+
+  resize() {
+    const { minHeight, minWidth, canvasEl } = this;
+    const { innerWidth, innerHeight } = window;
 
     if ((innerWidth >= minWidth) && (innerHeight >= minHeight)) {
-      this.canvasEl.width = innerWidth - 4;
-      this.canvasEl.height = innerHeight - 4;
+      canvasEl.width = innerWidth - 4;
+      canvasEl.height = innerHeight - 4;
       this.repaint();
     }
   }
 
   repaint() {
-    const { cols, rows } = this.getLayout();
-    const { loaded, canvasEl } = this;
-    context.src({ el: canvasEl })
-       // 骨架部分
-      .pipe(drawLine({ startX: cols[0], startY: rows[1], endX: cols[2], endY: rows[1] }))
-        .pipe(drawLine({ startX: cols[1], startY: rows[0], endX: cols[1], endY: rows[1] }))
-        .pipe(drawLine({ startX: cols[1], startY: rows[1], endX: cols[1], endY: rows[2] }))
-          .pipe(drawLine({ startX: cols[1], startY: rows[0], endX: cols[2], endY: rows[0] }))
-          .pipe(drawLine({ startX: cols[1], startY: rows[2], endX: cols[2], endY: rows[2] }))
-            .pipe(drawLine({ startX: cols[2], startY: rows[0], endX: cols[3], endY: rows[0] }))
-            .pipe(drawLine({ startX: cols[2], startY: rows[1], endX: cols[3], endY: rows[1] }))
-            .pipe(drawLine({ startX: cols[2], startY: rows[2], endX: cols[3], endY: rows[2] }))
-      // 图形部分
-      .pipe(drawIconLabel({ x: cols[0], y: rows[1], icon: 'hacktool', loaded, text: 'armypress.org' }))
-        .pipe(drawIconLabel({ x: cols[2], y: rows[0], icon: 'losthost', loaded , text: '大量与"Sofacy"组织相关的可疑域名。' }))
-        .pipe(drawIconLabel({ x: cols[2], y: rows[1], icon: 'losthost', loaded, text: '大量与"Sofacy"组织相关的可疑域名。' }))
-        .pipe(drawIconLabel({ x: cols[2], y: rows[2], icon: 'losthost', loaded, text: '大量与"Sofacy"组织相关的可疑域名。' }))
-          .pipe(drawIconText({ x: cols[3], y: rows[0], icon: 'actor', loaded, text: 'APT28' }))
-          .pipe(drawIconText({ x: cols[3], y: rows[1], icon: 'actor', loaded, text: 'APT28' }))
-          .pipe(drawIconText({ x: cols[3], y: rows[2], icon: 'actor', loaded, text: 'APT28' }))
+    const { props: { data } } = this;
+    const layout = this.getLayout();
+
+    data.then((data) => {
+      this.drawRootNode({ data, layout });
+
+      if (!this.loaded) {
+        this.loaded = true;
+      }
+    });
   }
+
+  // @TODO 数据处理逻辑
+  drawRootNode({  data, layout }) {
+    const { loaded, canvasEl } = this;
+    const { cols, rows } = layout;
+    const { rootNode: { icon, text } } = data;
+
+    context.src({ el: canvasEl })
+      .pipe(drawLine({ startX: cols[0], startY: rows[1], endX: cols[2], endY: rows[1] }))
+        .pipe(drawIconLabel({ x: cols[0], y: rows[1], icon, loaded, text }));
+  }
+
+  //drawChildrenNode() {
+    //const { loaded, canvasEl } = this;
+    //const { cols, rows } = layout;
+    //const { rootNode: { icon, text } } = data;
+
+    //context.src({ el: canvasEl })
+      //.pipe(drawIconLabel({ x: cols[2], y: rows[0], icon: 'losthost', loaded , text: '大量与"Sofacy"组织相关的可疑域名。' }))
+  //}
+
+  //context.src({ el: canvasEl })
+     //// 骨架部分
+    //.pipe(drawLine({ startX: cols[0], startY: rows[1], endX: cols[2], endY: rows[1] }))
+      //.pipe(drawLine({ startX: cols[1], startY: rows[0], endX: cols[1], endY: rows[1] }))
+      //.pipe(drawLine({ startX: cols[1], startY: rows[1], endX: cols[1], endY: rows[2] }))
+        //.pipe(drawLine({ startX: cols[1], startY: rows[0], endX: cols[2], endY: rows[0] }))
+        //.pipe(drawLine({ startX: cols[1], startY: rows[2], endX: cols[2], endY: rows[2] }))
+          //.pipe(drawLine({ startX: cols[2], startY: rows[0], endX: cols[3], endY: rows[0] }))
+          //.pipe(drawLine({ startX: cols[2], startY: rows[1], endX: cols[3], endY: rows[1] }))
+          //.pipe(drawLine({ startX: cols[2], startY: rows[2], endX: cols[3], endY: rows[2] }))
+    //// 图形部分
+    //.pipe(drawIconLabel({ x: cols[0], y: rows[1], icon: 'hacktool', loaded, text: 'armypress.org' }))
+      //.pipe(drawIconLabel({ x: cols[2], y: rows[0], icon: 'losthost', loaded , text: '大量与"Sofacy"组织相关的可疑域名。' }))
+      //.pipe(drawIconLabel({ x: cols[2], y: rows[1], icon: 'losthost', loaded, text: '大量与"Sofacy"组织相关的可疑域名。' }))
+      //.pipe(drawIconLabel({ x: cols[2], y: rows[2], icon: 'losthost', loaded, text: '大量与"Sofacy"组织相关的可疑域名。' }))
+        //.pipe(drawIconText({ x: cols[3], y: rows[0], icon: 'actor', loaded, text: 'APT28' }))
+        //.pipe(drawIconText({ x: cols[3], y: rows[1], icon: 'actor', loaded, text: 'APT28' }))
+        //.pipe(drawIconText({ x: cols[3], y: rows[2], icon: 'actor', loaded, text: 'APT28' }))
 
   render() {
     const imageStyle = { display: 'none' };

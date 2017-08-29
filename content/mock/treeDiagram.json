@@ -1,0 +1,32 @@
+{
+  "rootNode": {
+    "icon": "hacktool",
+    "text": "armypress.org",
+    "childNode": [
+      {
+        "icon": "losthost",
+        "text": "大量与\"Sofacy\"组织相关的可疑域名",
+        "leafNode": {
+          "icon": "actor",
+          "text": "APT28"
+        }
+      },
+      {
+        "icon": "losthost",
+        "text": "大量与\"Sofacy\"组织相关的可疑域名",
+        "leafNode": {
+          "icon": "actor",
+          "text": "APT28"
+        }
+      },
+      {
+        "icon": "losthost",
+        "text": "大量与\"Sofacy\"组织相关的可疑域名",
+        "leafNode": {
+          "icon": "actor",
+          "text": "APT28"
+        }
+      }
+    ]
+  }
+}

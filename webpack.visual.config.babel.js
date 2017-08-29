@@ -46,6 +46,10 @@ export default {
     ]
   },
 
+  devServer: {
+    contentBase: "./content/",
+  },
+
   plugins: [
     new HtmlWebpackPlugin({
       template: 'src/assets/index.html',

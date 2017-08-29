@@ -2,14 +2,21 @@ import ReactDOM from 'react-dom';
 
 import React from 'react';
 
-import 'styles/index.css';
-
 import TreeDiagram from 'components/TreeDiagram';
 
+import 'whatwg-fetch';
+
+import 'styles/index.css';
+
 function main() {
+  const data = window.fetch('/mock/treeDiagram.json')
+    .then((response) => {
+      return response.json();
+    })
+
   ReactDOM.render(
     <content>
-      <TreeDiagram />
+      <TreeDiagram data={data} />
     </content>,
     document.querySelector('main'),
   );
