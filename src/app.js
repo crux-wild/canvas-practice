@@ -12,7 +12,7 @@ function main() {
   const data = window.fetch('/mock/treeDiagram.json')
     .then((response) => {
       return response.json();
-    })
+    });
 
   ReactDOM.render(
     <content>

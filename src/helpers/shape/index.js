@@ -14,6 +14,7 @@ function drawOneImageNow(ctx, options = {}) {
 
 function drawOneImage(ctx, options = {}) {
   const { selector='' } = options;
+
   const img = document.querySelector(selector);
   options = { ...options, img };
 
