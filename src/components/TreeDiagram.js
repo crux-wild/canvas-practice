@@ -79,56 +79,27 @@ class TreeDiagram extends React.Component {
   }
 
   repaint() {
-    const { props: { data } } = this;
-    const layout = this.getLayout();
-
-    data.then((data) => {
-      this.drawRootNode({ data, layout });
-
-      if (!this.loaded) {
-        this.loaded = true;
-      }
-    });
-  }
-
-  // @TODO 数据处理逻辑
-  drawRootNode({  data, layout }) {
+    const { cols, rows } = this.getLayout();
     const { loaded, canvasEl } = this;
-    const { cols, rows } = layout;
-    const { rootNode: { icon, text } } = data;
-
     context.src({ el: canvasEl })
+       // 骨架部分
       .pipe(drawLine({ startX: cols[0], startY: rows[1], endX: cols[2], endY: rows[1] }))
-        .pipe(drawIconLabel({ x: cols[0], y: rows[1], icon, loaded, text }));
+        .pipe(drawLine({ startX: cols[1], startY: rows[0], endX: cols[1], endY: rows[1] }))
+        .pipe(drawLine({ startX: cols[1], startY: rows[1], endX: cols[1], endY: rows[2] }))
+          .pipe(drawLine({ startX: cols[1], startY: rows[0], endX: cols[2], endY: rows[0] }))
+          .pipe(drawLine({ startX: cols[1], startY: rows[2], endX: cols[2], endY: rows[2] }))
+            .pipe(drawLine({ startX: cols[2], startY: rows[0], endX: cols[3], endY: rows[0] }))
+            .pipe(drawLine({ startX: cols[2], startY: rows[1], endX: cols[3], endY: rows[1] }))
+            .pipe(drawLine({ startX: cols[2], startY: rows[2], endX: cols[3], endY: rows[2] }))
+      // 图形部分
+      .pipe(drawIconLabel({ x: cols[0], y: rows[1], icon: 'hacktool', loaded, text: 'armypress.org' }))
+        .pipe(drawIconLabel({ x: cols[2], y: rows[0], icon: 'losthost', loaded , text: '大量与"Sofacy"组织相关的可疑域名。' }))
+        .pipe(drawIconLabel({ x: cols[2], y: rows[1], icon: 'losthost', loaded, text: '大量与"Sofacy"组织相关的可疑域名。' }))
+        .pipe(drawIconLabel({ x: cols[2], y: rows[2], icon: 'losthost', loaded, text: '大量与"Sofacy"组织相关的可疑域名。' }))
+          .pipe(drawIconText({ x: cols[3], y: rows[0], icon: 'actor', loaded, text: 'APT28' }))
+          .pipe(drawIconText({ x: cols[3], y: rows[1], icon: 'actor', loaded, text: 'APT28' }))
+          .pipe(drawIconText({ x: cols[3], y: rows[2], icon: 'actor', loaded, text: 'APT28' }))
   }
-
-  //drawChildrenNode() {
-    //const { loaded, canvasEl } = this;
-    //const { cols, rows } = layout;
-    //const { rootNode: { icon, text } } = data;
-
-    //context.src({ el: canvasEl })
-      //.pipe(drawIconLabel({ x: cols[2], y: rows[0], icon: 'losthost', loaded , text: '大量与"Sofacy"组织相关的可疑域名。' }))
-  //}
-
-  //context.src({ el: canvasEl })
-     //// 骨架部分
-    //.pipe(drawLine({ startX: cols[0], startY: rows[1], endX: cols[2], endY: rows[1] }))
-      //.pipe(drawLine({ startX: cols[1], startY: rows[0], endX: cols[1], endY: rows[1] }))
-      //.pipe(drawLine({ startX: cols[1], startY: rows[1], endX: cols[1], endY: rows[2] }))
-        //.pipe(drawLine({ startX: cols[1], startY: rows[0], endX: cols[2], endY: rows[0] }))
-        //.pipe(drawLine({ startX: cols[1], startY: rows[2], endX: cols[2], endY: rows[2] }))
-          //.pipe(drawLine({ startX: cols[2], startY: rows[0], endX: cols[3], endY: rows[0] }))
-          //.pipe(drawLine({ startX: cols[2], startY: rows[1], endX: cols[3], endY: rows[1] }))
-          //.pipe(drawLine({ startX: cols[2], startY: rows[2], endX: cols[3], endY: rows[2] }))
-    //// 图形部分
-    //.pipe(drawIconLabel({ x: cols[0], y: rows[1], icon: 'hacktool', loaded, text: 'armypress.org' }))
-      //.pipe(drawIconLabel({ x: cols[2], y: rows[0], icon: 'losthost', loaded , text: '大量与"Sofacy"组织相关的可疑域名。' }))
-      //.pipe(drawIconLabel({ x: cols[2], y: rows[1], icon: 'losthost', loaded, text: '大量与"Sofacy"组织相关的可疑域名。' }))
-      //.pipe(drawIconLabel({ x: cols[2], y: rows[2], icon: 'losthost', loaded, text: '大量与"Sofacy"组织相关的可疑域名。' }))
-        //.pipe(drawIconText({ x: cols[3], y: rows[0], icon: 'actor', loaded, text: 'APT28' }))
-        //.pipe(drawIconText({ x: cols[3], y: rows[1], icon: 'actor', loaded, text: 'APT28' }))
-        //.pipe(drawIconText({ x: cols[3], y: rows[2], icon: 'actor', loaded, text: 'APT28' }))
 
   render() {
     const imageStyle = { display: 'none' };
