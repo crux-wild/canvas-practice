@@ -19,6 +19,8 @@ class TreeDiagram extends React.Component {
   constructor(props) {
     super(props);
     this.canvasHash = Date.now();
+    this.minWidth = 682;
+    this.minHeight = 383;
   }
 
   componentDidMount() {
@@ -51,16 +53,22 @@ class TreeDiagram extends React.Component {
   }
 
   resize() {
-    // @FIXME 屏幕递增和递减应该使用两套逻辑
+    const { minHeight, minWidth } = this;
     const { innerWidth, innerHeight } = window;
-    if (((innerWidth >= 682) && (innerHeight >= 383)) || (!this.loaded)) {
+    if (!(this.loaded)) {
+      if ((innerWidth < minWidth) || (innerHeight < minHeight)) {
+        this.canvasEl.width = minWidth - 4;
+        this.canvasEl.height = minHeight - 4;
+      }
+
+      this.repaint();
+      this.loaded = true;
+    }
+
+    if ((innerWidth >= minWidth) && (innerHeight >= minHeight)) {
       this.canvasEl.width = innerWidth - 4;
       this.canvasEl.height = innerHeight - 4;
       this.repaint();
-
-      if (!this.loaded) {
-        this.loaded = true;
-      }
     }
   }
 
