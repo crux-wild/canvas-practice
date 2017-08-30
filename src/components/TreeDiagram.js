@@ -29,8 +29,8 @@ class TreeDiagram extends React.Component {
     return hash;
   }
 
-  static getMinHeight({ lineNumber }) {
-    return 100 * lineNunmbers;
+  static getMinHeight({ lineNumbers }) {
+    return 100 * lineNumbers;
   }
 
   static getRows({ lineNumbers=0 } = {}) {
@@ -53,8 +53,10 @@ class TreeDiagram extends React.Component {
     Promise.resolve(data)
     .then((data) => {
       const { rootNode: { childNode } } = data;
+      const lineNumbers = childNode.length;
+
       this.data = data;
-      this.minHeight = childNode.length * 3;
+      this.minHeight = TreeDiagram.getMinHeight({ lineNumbers });
 
       this.firstTimeResize();
       this.bindResizeEvent();
