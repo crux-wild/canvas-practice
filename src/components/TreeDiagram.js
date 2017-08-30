@@ -35,13 +35,12 @@ class TreeDiagram extends React.Component {
     const { canvasHash } = this;
     this.canvasEl = document.querySelector(`#${canvasHash}`);
 
-    // 等待异步数据到达
     Promise.resolve(data)
-      .then((data) => {
-        this.data = data;
-        this.firstTimeResize();
-        this.bindResizeEvent();
-      });
+    .then((data) => {
+      this.data = data;
+      this.firstTimeResize();
+      this.bindResizeEvent();
+    });
   }
 
   getLayout() {
@@ -90,45 +89,76 @@ class TreeDiagram extends React.Component {
 
   repaint() {
     const layout = this.getLayout();
-    const { data } = this;
+    const { data: { rootNode } } = this;
 
-    this.repaintRootNode({ data, layout });
-    this.repaintChildNode({ data, layout });
+    this.repaintRootNode({ rootNode, layout });
   }
 
-  repaintRootNode({ data, layout  }) {
-    const { rootNode: { icon, text, childNode } } = data;
+  // @TODO 需要重构
+  repaintRootNode({ rootNode, layout  }) {
+    const { icon='', text='', childNode } = rootNode;
     const { cols, rows } = layout;
     const { canvasEl } = this;
 
-    context.src({ el: canvasEl })
-      .pipe(drawLine({ startX: cols[0], startY: rows[1], endX: cols[1], endY: rows[1] }))
-      .pipe(drawIconLabel({ x: cols[0], y: rows[1], icon, text }))
+    if ((icon != '') && (text != '')) {
+      if (childNode.length > 0) {
+        const startX = cols[0];
+        const startY = rows[1];
+        const endX = cols[1];
+        const endY = rows[1];
+
+        context.src({ el: canvasEl })
+        .pipe(drawLine({ startX, startY, endX, endY }));
+
+        this.repaintChildNode({ childNode, layout });
+      }
+
+      const x = cols[0];
+      const y = rows[1];
+
+      context.src({ el: canvasEl })
+      .pipe(drawIconLabel({ x, y, icon, text }));
+    }
   }
 
-  repaintChildNode({ data, layout }) {
-    const { rootNode: { childNode } } = data;
+  repaintChildNode({ childNode, layout }) {
     const { cols, rows } = layout;
     const { canvasEl } = this;
 
     childNode.forEach((node, index) => {
-      const { icon, text, leafNode } = node;
+      const { icon='', text='', leafNode=null } = node;
       const row = rows[index];
 
-      context.src({ el: canvasEl })
+      if ((icon != '') && (text != '')) {
+        context.src({ el: canvasEl })
         .pipe(drawLine({ startX: cols[1], startY: row, endX: cols[2], endY: row }))
         .pipe(drawLine({ startX: cols[2], startY: row, endX: cols[3], endY: row }))
         .pipe(drawIconLabel({ x: cols[2], y: row, icon, text }))
+      }
+
+      if (index < childNode.length - 1) {
+        const startX = cols[1];
+        const startY = rows[index];
+        const endX = cols[1];
+        const endY = rows[index + 1];
+
+        context.src({ el: canvasEl })
+        .pipe(drawLine({ startX, startY, endX, endY }));
+      }
+
+      if (leafNode != null) {
+        this.repaintLeafNode({ leafNode, layout, row });
+      }
     });
-    //context.src({ el: canvasEl })
-      //.pipe(drawLine({ startX: cols[1], startY: rows[0], endX: cols[1], endY: rows[1] }))
-      //.pipe(drawLine({ startX: cols[1], startY: rows[1], endX: cols[1], endY: rows[2] }))
-        //.pipe(drawIconText({ x: cols[3], y: rows[0], icon: 'actor', text: 'APT28' }))
-        //.pipe(drawIconText({ x: cols[3], y: rows[1], icon: 'actor', text: 'APT28' }))
-        //.pipe(drawIconText({ x: cols[3], y: rows[2], icon: 'actor', text: 'APT28' }))
   }
 
-  repaintLeafNode() {
+  repaintLeafNode({ leafNode, layout, row }) {
+    const { icon, text } = leafNode;
+    const { cols, rows } = layout;
+    const { canvasEl } = this;
+
+    context.src({ el: canvasEl })
+    .pipe(drawIconText({ x: cols[3], y: row, icon, text }));
   }
 
   render() {
