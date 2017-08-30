@@ -123,22 +123,16 @@ class TreeDiagram extends React.Component {
 
     if ((icon != '') && (text != '')) {
       if (childNode.length > 0) {
-        const startX = cols[0];
-        const startY = rows[1];
-        const endX = cols[1];
-        const endY = rows[1];
+        const row = rows[1];
 
         context.src({ el: canvasEl })
-        .pipe(drawLine({ startX, startY, endX, endY }));
+        .pipe(drawLine({ startX: cols[0], startY: row, endX: cols[1], endY: row }));
 
         this.repaintChildNode({ childNode, layout });
       }
 
-      const x = cols[0];
-      const y = rows[1];
-
       context.src({ el: canvasEl })
-      .pipe(drawIconLabel({ x, y, icon, text }));
+      .pipe(drawIconLabel({ x: cols[0], y: rows[1], icon, text }));
     }
   }
 
@@ -155,31 +149,30 @@ class TreeDiagram extends React.Component {
         .pipe(drawLine({ startX: cols[1], startY: row, endX: cols[2], endY: row }))
         .pipe(drawLine({ startX: cols[2], startY: row, endX: cols[3], endY: row }))
         .pipe(drawIconLabel({ x: cols[2], y: row, icon, text }))
-      }
 
-      if (index < childNode.length - 1) {
-        const startX = cols[1];
-        const startY = rows[index];
-        const endX = cols[1];
-        const endY = rows[index + 1];
+        if (index < childNode.length - 1) {
+          const col = cols[1];
 
-        context.src({ el: canvasEl })
-        .pipe(drawLine({ startX, startY, endX, endY }));
-      }
+          context.src({ el: canvasEl })
+          .pipe(drawLine({ startX: col, startY: rows[index], endX: col, endY: rows[index + 1] }));
+        }
 
-      if (leafNode != null) {
-        this.repaintLeafNode({ leafNode, layout, row });
+        if (leafNode) {
+          this.repaintLeafNode({ leafNode, layout, row });
+        }
       }
     });
   }
 
-  repaintLeafNode({ leafNode, layout, row }) {
-    const { icon, text } = leafNode;
-    const { cols, rows } = layout;
+  repaintLeafNode({ leafNode, layout, row: y }) {
+    const { icon='', text='' } = leafNode;
+    const { cols } = layout;
     const { canvasEl } = this;
 
-    context.src({ el: canvasEl })
-    .pipe(drawIconText({ x: cols[3], y: row, icon, text }));
+    if ((icon != '') && (text != '')) {
+      context.src({ el: canvasEl })
+      .pipe(drawIconText({ x: cols[3], y, icon, text }));
+    }
   }
 
   render() {
