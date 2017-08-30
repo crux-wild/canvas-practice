@@ -19,7 +19,7 @@ class TreeDiagram extends React.Component {
   constructor(props) {
     super(props);
     this.minWidth = 540;
-    this.canvasHash = this.constructor.getCanvasHash();
+    this.canvasHash = TreeDiagram.getCanvasHash();
   }
 
   static getCanvasHash() {
@@ -35,11 +35,11 @@ class TreeDiagram extends React.Component {
 
   static getRows({ lineNumbers=0 } = {}) {
     const per = 1 / lineNumbers;
-    const arr = [];
+    const array = [];
 
-    arr.length = lineNumbers;
-    arr.fill(per);
-    return arr.map((per, index) => {
+    array.length = lineNumbers;
+    array.fill(per);
+    return array.map((per, index) => {
       const coordinate = per * index  + per / 2;
       return coordinate;
     })
@@ -130,7 +130,6 @@ class TreeDiagram extends React.Component {
 
         this.repaintChildNode({ childNode, layout });
       }
-
       context.src({ el: canvasEl })
       .pipe(drawIconLabel({ x: cols[0], y: rows[1], icon, text }));
     }
@@ -139,20 +138,16 @@ class TreeDiagram extends React.Component {
   repaintChildNode({ childNode, layout }) {
     const { cols, rows } = layout;
     const { canvasEl } = this;
-
     childNode.forEach((node, index) => {
       const { icon='', text='', leafNode=null } = node;
       const row = rows[index];
-
       if ((icon != '') && (text != '')) {
         context.src({ el: canvasEl })
         .pipe(drawLine({ startX: cols[1], startY: row, endX: cols[2], endY: row }))
         .pipe(drawLine({ startX: cols[2], startY: row, endX: cols[3], endY: row }))
         .pipe(drawIconLabel({ x: cols[2], y: row, icon, text }))
-
         if (index < childNode.length - 1) {
           const col = cols[1];
-
           context.src({ el: canvasEl })
           .pipe(drawLine({ startX: col, startY: rows[index], endX: col, endY: rows[index + 1] }));
         }
