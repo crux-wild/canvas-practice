@@ -163,6 +163,7 @@ function getOneLineText({ ctx, text, start, end, textWidth }) {
 }
 
 function textEllipsis(multiLineText, options) {
+  // @TODO 截字算法需要优化
   const { maxLine=0 } = options;
   let multiLineTextWithEllipsis;
 

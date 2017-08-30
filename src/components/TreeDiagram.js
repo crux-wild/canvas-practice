@@ -18,8 +18,7 @@ import drawCircleIcon, {
 class TreeDiagram extends React.Component {
   constructor(props) {
     super(props);
-    this.minWidth = 682;
-    this.minHeight = 383;
+    this.minWidth = 540;
     this.canvasHash = this.constructor.getCanvasHash();
   }
 
@@ -30,6 +29,22 @@ class TreeDiagram extends React.Component {
     return hash;
   }
 
+  static getMinHeight({ lineNumber }) {
+    return 100 * lineNunmbers;
+  }
+
+  static getRows({ lineNumbers=0 } = {}) {
+    const per = 1 / lineNumbers;
+    const arr = [];
+
+    arr.length = lineNumbers;
+    arr.fill(per);
+    return arr.map((per, index) => {
+      const coordinate = per * index  + per / 2;
+      return coordinate;
+    })
+  }
+
   componentDidMount() {
     const { props: { data } } = this;
     const { canvasHash } = this;
@@ -37,16 +52,19 @@ class TreeDiagram extends React.Component {
 
     Promise.resolve(data)
     .then((data) => {
+      const { rootNode: { childNode } } = data;
       this.data = data;
+      this.minHeight = childNode.length * 3;
+
       this.firstTimeResize();
       this.bindResizeEvent();
     });
   }
 
-  getLayout() {
+  getLayout({ lineNumbers=0 } = {}) {
     const { width, height } = this.canvasEl;
-    const cols = [ 0.05, 0.305, 0.455, 0.95 ];
-    const rows = [ 0.1, 0.5, 0.9 ];
+    const rows = this.constructor.getRows({ lineNumbers });
+    const cols = [ 0.05, 0.43, 0.55, 0.95 ];
     const coordinates = { cols, rows };
     return fluidLayout({ width, height, coordinates });
   }
@@ -88,15 +106,16 @@ class TreeDiagram extends React.Component {
   }
 
   repaint() {
-    const layout = this.getLayout();
     const { data: { rootNode } } = this;
+    const { childNode: { length: lineNumbers } } = rootNode;
+    const layout = this.getLayout({ lineNumbers });
 
     this.repaintRootNode({ rootNode, layout });
   }
 
   // @TODO 需要重构
   repaintRootNode({ rootNode, layout  }) {
-    const { icon='', text='', childNode } = rootNode;
+    const { icon='', text='', childNode=[] } = rootNode;
     const { cols, rows } = layout;
     const { canvasEl } = this;
 
