@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "open http://localhost:8080/ && webpack-dev-server --config webpack.visual.config.babel.js",
+    "mock": "puer -a _mockserver.json",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -37,6 +38,7 @@
     "postcss-import": "^10.0.0",
     "postcss-loader": "^2.0.6",
     "precss": "^2.0.0",
+    "puer-mock": "^1.2.0",
     "style-loader": "^0.18.2",
     "webpack": "^3.5.5",
     "webpack-dev-server": "^2.7.1"

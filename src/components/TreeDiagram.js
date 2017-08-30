@@ -18,6 +18,7 @@ import drawCircleIcon, {
 class TreeDiagram extends React.Component {
   constructor(props) {
     super(props);
+    this.height = 0;
     this.minWidth = 540;
     this.canvasHash = TreeDiagram.getCanvasHash();
   }
@@ -30,7 +31,7 @@ class TreeDiagram extends React.Component {
   }
 
   static getMinHeight({ lineNumbers }) {
-    return 100 * lineNumbers;
+    return 105 * lineNumbers;
   }
 
   static getRows({ lineNumbers=0 } = {}) {
@@ -44,6 +45,7 @@ class TreeDiagram extends React.Component {
       return coordinate;
     })
   }
+
 
   componentDidMount() {
     const { props: { data } } = this;
@@ -86,13 +88,20 @@ class TreeDiagram extends React.Component {
     const { minHeight, minWidth, canvasEl } = this;
     const { innerWidth, innerHeight } = window;
 
-    if ((innerWidth < minWidth) && (innerHeight < minHeight)) {
-      canvasEl.width = minWidth - 4;
+    if ((innerWidth < minWidth) || (innerHeight < minHeight)) {
       canvasEl.height = minHeight - 4;
+
+      if (innerWidth < minWidth) {
+        canvasEl.width = minWidth - 4;
+      } else {
+        canvasEl.width = innerWidth - 4;
+      }
     } else {
       canvasEl.width = innerWidth - 4;
       canvasEl.height = innerHeight - 4;
     }
+
+    this.height = canvasEl.height;
     this.repaint();
   }
 
@@ -100,11 +109,21 @@ class TreeDiagram extends React.Component {
     const { minHeight, minWidth, canvasEl } = this;
     const { innerWidth, innerHeight } = window;
 
-    if ((innerWidth >= minWidth) && (innerHeight >= minHeight)) {
+    if ((innerWidth >= minWidth) || (innerHeight >= minHeight)) {
       canvasEl.width = innerWidth - 4;
       canvasEl.height = innerHeight - 4;
+
+      if (innerHeight < minHeight) {
+        canvasEl.height = minHeight - 4;
+      }
+
+      this.height = canvasEl.height;
       this.repaint();
     }
+  }
+
+  getMiddle() {
+    return this.height / 2;
   }
 
   repaint() {
@@ -122,17 +141,16 @@ class TreeDiagram extends React.Component {
     const { canvasEl } = this;
 
     if ((icon != '') && (text != '')) {
+      const y = this.getMiddle();
       if (childNode.length > 0) {
-        const row = rows[1];
-
         context.src({ el: canvasEl })
-        .pipe(drawLine({ startX: cols[0], startY: row, endX: cols[1], endY: row }));
+        .pipe(drawLine({ startX: cols[0], startY: y, endX: cols[1], endY: y}));
 
         this.repaintChildNode({ childNode, layout });
       }
 
       context.src({ el: canvasEl })
-      .pipe(drawIconLabel({ x: cols[0], y: rows[1], icon, text }));
+      .pipe(drawIconLabel({ x: cols[0], y, icon, text }));
     }
   }
 
