@@ -9,7 +9,7 @@ import 'whatwg-fetch';
 import 'styles/index.css';
 
 function main() {
-  const data = window.fetch('/mock/treeDiagram.json')
+  const data = window.fetch('/api/treeDiagram.json')
     .then((response) => {
       return response.json();
     });

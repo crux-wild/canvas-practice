@@ -1,7 +1,7 @@
 import path from 'path';
 
 export default {
-  entry: './src/app.js',
+  entry: './src/pages/app.js',
 
   output: {
     path: path.resolve(__dirname, 'dist'),

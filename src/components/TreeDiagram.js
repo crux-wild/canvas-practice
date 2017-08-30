@@ -167,10 +167,16 @@ class TreeDiagram extends React.Component {
       const row = rows[index];
 
       if ((icon != '') && (text != '')) {
+        if (leafNode) {
+          const { icon, text } = leafNode;
+          if ((icon != '') && (text != '')) {
+            context.src({ el: canvasEl })
+            .pipe(drawLine({ startX: cols[2], startY: row, endX: cols[3], endY: row }))
+          }
+        }
 
         context.src({ el: canvasEl })
         .pipe(drawLine({ startX: cols[1], startY: row, endX: cols[2], endY: row }))
-        .pipe(drawLine({ startX: cols[2], startY: row, endX: cols[3], endY: row }))
         .pipe(drawIconLabel({ x: cols[2], y: row, icon, text }))
 
         if (index < childNode.length - 1) {
