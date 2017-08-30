@@ -18,7 +18,7 @@ function drawOneImage(ctx, options = {}) {
   const img = document.querySelector(selector);
   options = { ...options, img };
 
-  if (options.loaded) {
+  if (img .complete) {
     drawOneImageNow(ctx, options);
   } else {
     img.addEventListener('load', () => {
