@@ -145,6 +145,7 @@ class TreeDiagram extends React.Component {
       const row = rows[index];
 
       if ((icon != '') && (text != '')) {
+
         context.src({ el: canvasEl })
         .pipe(drawLine({ startX: cols[1], startY: row, endX: cols[2], endY: row }))
         .pipe(drawLine({ startX: cols[2], startY: row, endX: cols[3], endY: row }))
