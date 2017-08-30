@@ -162,9 +162,28 @@ function getOneLineText({ ctx, text, start, end, textWidth }) {
   }
 }
 
+function textEllipsis(multiLineText, options) {
+  const { maxLine=0 } = options;
+  let multiLineTextWithEllipsis;
+
+  if (maxLine != 0 && multiLineText.length > maxLine) {
+    const lastIndex = maxLine - 1;
+    let lastLine = multiLineText[lastIndex];
+    const start = lastLine.length - 4;
+
+    lastLine = lastLine.split('').splice(start, 3);
+    multiLineText[lastIndex] = lastLine.join('') + '...';
+    multiLineTextWithEllipsis = multiLineText.slice(0, maxLine);
+    return multiLineTextWithEllipsis;
+  }
+
+  return multiLineText;
+}
+
+
 function convertToMultiLineText(ctx, options) {
   const { text, textWidth=0, font={} } = options;
-  ctx.font = getFontFormat(font);
+  ctx.font = getFontFormat(options);
 
   const multiLineText = [];
   const end = text.length;
@@ -174,7 +193,7 @@ function convertToMultiLineText(ctx, options) {
     multiLineText.push(oneLineText);
     start = start + oneLineText.length;
   }
-  return multiLineText;
+  return textEllipsis(multiLineText, options);
 }
 
 function getLineHeight(options) {
@@ -193,6 +212,7 @@ function drawOneLabel(ctx, options) {
   const { left=0, right=left } = padding;
 
   const { x, y } = options;
+  options = { ...options, maxLine: 3 };
   const multiLineText = convertToMultiLineText(ctx, options);
   const line = multiLineText.length;
   const width = left + textWidth + right;
@@ -208,7 +228,8 @@ function drawOneLabel(ctx, options) {
   const { lineWidth=2 } = options;
   const textX = x + left;
   const textY = y + height / 2 - getLineHeight(options) * line;
-  options = { ...options, textWidth, fillStyle: '#ccc', x: textX, y: textY, text: multiLineText };
+  options = { ...options,  fillStyle: '#ccc', text: multiLineText };
+  options = { ...options, textWidth,  x: textX, y: textY };
   fillOneText(ctx, options);
   const label = { width, height };
 }
@@ -225,13 +246,17 @@ function fillOneText(ctx, options) {
 
   text.forEach((text, index) => {
     const textY = y + index * getLineHeight(options);
-    ctx.font = getFontFormat(font);
+    ctx.font = getFontFormat(options);
     ctx.fillStyle = fillStyle;
     ctx.fillText(text, x, textY);
   });
 }
 
-function getFontFormat(font) {
+function getFontFormat(options) {
+  const {
+    font={},
+  } = options;
+
   const {
     style='normal',
     variant='normal',
@@ -304,21 +329,22 @@ function drawOneIconText(ctx, options) {
   options = { ...options, radius };
   drawOneCircleIcon(ctx, options);
 
-  options = { ...options, textWidth: 100 };
+  options = { ...options, textWidth: 100, maxLine: 3 };
   const multiLineText = convertToMultiLineText(ctx, options);
 
   const { x, y } = options;
   const font = { size: '15px', lineHeight: '1' };
   options = { ...options, font };
 
-  const fontFormat = getFontFormat(font);
+  const fontFormat = getFontFormat(options);
   ctx.font = fontFormat;
 
   const lines = multiLineText.length;
   const computedWidth = ctx.measureText(multiLineText).width;
   const textY = y +  lines * getLineHeight(options) + radius;
   const textX = x - (computedWidth / 2);
-  options = { ...options, text: multiLineText, font, fillStyle: '#888', y: textY, x: textX };
+  options = { ...options, text: multiLineText };
+  options = { ...options, font, fillStyle: '#888', y: textY, x: textX };
   fillOneText(ctx, options);
 }
 
