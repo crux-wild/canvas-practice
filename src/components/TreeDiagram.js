@@ -117,6 +117,10 @@ class TreeDiagram extends React.Component {
         canvasEl.height = minHeight - 4;
       }
 
+      if (innerWidth < minWidth) {
+        canvasEl.width = minWidth - 4;
+      }
+
       this.height = canvasEl.height;
       this.repaint();
     }
