@@ -8,8 +8,7 @@ const app = express();
 
 app.get('/api/treeDiagram.json', (req, res) => {
   const randomLength = Math.ceil(Math.random() * 100);
-  const childNode = [];
-  childNode.length = randomLength;
+  const childNode = new Array(randomLength);
 
   for (let index = 0; index < childNode.length; index++) {
     childNode[index] = {

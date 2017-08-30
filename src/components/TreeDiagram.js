@@ -36,9 +36,7 @@ class TreeDiagram extends React.Component {
 
   static getRows({ lineNumbers=0 } = {}) {
     const per = 1 / lineNumbers;
-    const array = [];
-
-    array.length = lineNumbers;
+    const array = new Array(lineNumbers);
     array.fill(per);
     return array.map((per, index) => {
       const coordinate = per * index  + per / 2;
